@@ -27,14 +27,12 @@ touch commands.txt
 
 # create upload commands to be run in parallel and store in commands.txt
 i=0
-for f in $files 
-  do
+for f in $files; do
      byteStart=$((i*byteSize))
      byteEnd=$((i*byteSize+byteSize-1))
-     echo aws glacier upload-multipart-part --body $f --range "'"'bytes '"$byteStart"'-'"$byteEnd"'/*'"'" --account-id - --vault-name media1 --upload-id $uploadId >> commands.txt
+     echo aws glacier upload-multipart-part --body $f --range \'bytes $byteStart-$byteEnd/*\' --account-id - --vault-name media1 --upload-id $uploadId >> commands.txt
      i=$(($i+1))
-     
-  done
+done
 
 # run upload commands in parallel
 #   --load 100% option only gives new jobs out if the core is than 100% active
