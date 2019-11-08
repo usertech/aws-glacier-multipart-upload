@@ -75,11 +75,6 @@ echo "List Active Multipart Uploads:"
 echo "Verify that the connection is closed:"
 aws glacier list-multipart-uploads --account-id - --vault-name $VAULT
 
-#echo "-------------"
-#echo "Contents of commands.txt"
-#cat commands.txt
 echo "--------------"
-echo "Deleting temporary commands.txt file"
-rm commands.txt
-
-
+echo "Deleting temporary commands.txt file and the part files"
+rm commands.txt part*
