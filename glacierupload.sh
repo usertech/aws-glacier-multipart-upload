@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# dependencies, jq and parallel:
-# sudo dnf install jq
-# sudo dnf install parallel
-# sudo pip install awscli
-
 byteSize=4194304
 
 # count the number of files that begin with "part"
