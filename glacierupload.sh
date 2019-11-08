@@ -27,6 +27,8 @@ done
 
 byteSize=4194304
 
+gsplit --bytes=$byteSize --verbose $FILE part
+
 # count the number of files that begin with "part"
 fileCount=$(ls -1 | grep "^part" | wc -l)
 echo "Total parts to upload: " $fileCount
@@ -35,7 +37,7 @@ echo "Total parts to upload: " $fileCount
 files=$(ls | grep "^part")
 
 # initiate multipart upload connection to glacier
-init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "November 2015 Pictures and Videos")
+init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "$FILE multipart upload")
 
 echo "---------------------------------------"
 # xargs trims off the quotes
