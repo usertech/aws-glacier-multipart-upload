@@ -40,9 +40,8 @@ parts=$(ls | grep "^part")
 init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "$FILE multipart upload")
 
 echo "---------------------------------------"
-# xargs trims off the quotes
 # jq pulls out the json element titled uploadId
-uploadId=$(echo $init | jq '.uploadId' | xargs)
+uploadId=$(echo $init | jq -r '.uploadId')
 
 # create temp file to store commands
 touch commands.txt
