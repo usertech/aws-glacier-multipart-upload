@@ -30,11 +30,11 @@ byteSize=4194304
 gsplit --bytes=$byteSize --verbose $FILE part
 
 # count the number of files that begin with "part"
-fileCount=$(ls -1 | grep "^part" | wc -l)
-echo "Total parts to upload: " $fileCount
+partCount=$(ls -1 | grep "^part" | wc -l)
+echo "Total parts to upload: " $partCount
 
 # get the list of part files to upload.  Edit this if you chose a different prefix in the split command
-files=$(ls | grep "^part")
+parts=$(ls | grep "^part")
 
 # initiate multipart upload connection to glacier
 init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "$FILE multipart upload")
@@ -49,10 +49,10 @@ touch commands.txt
 
 # create upload commands to be run in parallel and store in commands.txt
 i=0
-for f in $files; do
+for p in $parts; do
      byteStart=$((i*byteSize))
      byteEnd=$((i*byteSize+byteSize-1))
-     echo aws glacier upload-multipart-part --body $f --range \'bytes $byteStart-$byteEnd/*\' --account-id - --vault-name $VAULT --upload-id $uploadId >> commands.txt
+     echo aws glacier upload-multipart-part --body $p --range \'bytes $byteStart-$byteEnd/*\' --account-id - --vault-name $VAULT --upload-id $uploadId >> commands.txt
      i=$(($i+1))
 done
 
