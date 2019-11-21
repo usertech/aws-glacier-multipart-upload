@@ -37,7 +37,7 @@ echo "Total parts to upload: " $partCount
 parts=$(ls | grep "^part")
 
 # initiate multipart upload connection to glacier
-init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "$FILE multipart upload")
+init=$(aws glacier initiate-multipart-upload --account-id - --part-size $byteSize --vault-name $VAULT --archive-description "multipart upload filename: $FILE")
 
 echo "---------------------------------------"
 # jq pulls out the json element titled uploadId
@@ -71,8 +71,10 @@ echo "List Active Multipart Uploads:"
 echo "Verify that a connection is open:"
 aws glacier list-multipart-uploads --account-id - --vault-name $VAULT
 
-# end the multipart upload
-aws glacier abort-multipart-upload --account-id - --vault-name $VAULT --upload-id $uploadId
+# complete the multipart upload
+fileSize=$(wc -c < $FILE)
+fileHash=$(python -c "from botocore.utils import calculate_tree_hash; print(calculate_tree_hash(open(\"$FILE\", \"rb\")))")
+aws glacier complete-multipart-upload --account-id - --vault-name $VAULT --upload-id $uploadId --archive-size $fileSize --checksum $fileHash
 
 # list open multipart connections
 echo "------------------------------"
